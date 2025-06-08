@@ -123,6 +123,9 @@ local_settings.py
 _local_settings.py
 gunicorn-error-log
 db copy.sqlite3
+venv/
+.venv/
+.vscode/ # Opcional, dependendo do time
 
 #temporario, dps ignorar
 !db.sqlite3
