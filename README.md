@@ -173,6 +173,8 @@ fix: Corrige o bug do botão de logout
 
 docs: Atualiza o guia de contribuição
 
+Referencia de boas mensagens: https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716#file-semantic-commit-messages-md
+
 ### 4. Envie sua Branch para o GitHub (Push)
 
 ```bash
