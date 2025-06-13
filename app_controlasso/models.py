@@ -5,7 +5,7 @@ class Conta(models.Model):
     # O 'id' é criado automaticamente pelo Django
     numero_conta = models.CharField(max_length=20, unique=True)
     saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contas')
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='conta')
     class Meta:
         db_table = 'tb_cad_conta'
 
