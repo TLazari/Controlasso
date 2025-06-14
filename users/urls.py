@@ -4,14 +4,11 @@ from . import views
 
 app_name = "users"
 
-# URLS
 urlpatterns = [
-    path('dashboard/', views.dashboard_view, name='dashboard'),
-    path('transferencia/', views.transferencia_view, name='transferencia'),
-    path('transferencias/historico/', views.transferencias_historico_view, name='transferencias_historico'),
-    path('acoes/', views.acoes_list_view, name='acoes_list'),
-    path('acoes/favoritas/', views.acoes_favoritas_view, name='acoes_favoritas'),
-    path('acoes/compradas/', views.acoes_compradas_view, name='acoes_compradas'),
-    path('acoes/<str:codigo>/', views.acao_detail_view, name='acao_detail'),
-    path('perfil/', views.perfil_view, name='perfil'),
+    path("", views.login_view, name="login"),
+    path("login/create/", views.login_create, name="login_create"),
+    path("logout/", views.logout_view, name="logout"),
+    path("register/", views.register_view, name="register"),
+    path("register/create/", views.register_create, name="register_create"),
+    path("home_TEMPORARIA/", views.home_TEMPORARIA, name="home_TEMPORARIA")
 ]
