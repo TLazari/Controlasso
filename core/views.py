@@ -10,7 +10,7 @@ from app_controlasso.models import (  #import dos models
 )
 
 
-# Create your views here.
+
 def dashboard_view(request):
     ... # No lugar dos tres pontinhos fica a comunicação do database vulgo models, com o front ent
     #tipo nos falamos data base para enviar a tabela como objeto 
