@@ -1,10 +1,26 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 
+from app_controlasso.models import (  #import dos models
+    Acao,
+    CompraVendaAcao,
+    Conta,
+    Favorita,
+    Transferencia,
+)
 
-# Create your views here.
+
+
 def dashboard_view(request):
-    ...
-    return render(request, "core/pages/dashboard.html")
+    ... # No lugar dos tres pontinhos fica a comunicação do database vulgo models, com o front ent
+    #tipo nos falamos data base para enviar a tabela como objeto 
+    usuarios = User.objects.order_by('username')  # aqui eu pedi só os usuarios relacionados
+    
+    context = { #atribuo tudo que quero para ser enviado nessa variavel 
+        'usuarios': usuarios,
+    }
+    
+    return render(request, "core/pages/dashboard.html", context) # envio
 
 def transferencia_view(request):
     ...
