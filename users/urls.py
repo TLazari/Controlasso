@@ -10,5 +10,4 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
     path("register/", views.register_view, name="register"),
     path("register/create/", views.register_create, name="register_create"),
-    path("home_TEMPORARIA/", views.home_TEMPORARIA, name="home_TEMPORARIA")
 ]

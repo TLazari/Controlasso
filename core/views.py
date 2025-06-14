@@ -33,3 +33,7 @@ def acao_detail_view(request):
 def perfil_view(request):
     ...
     return render(request, "core/pages/perfil.html")
+
+def home_view(request):
+    ...
+    return render(request, "core/pages/home.html")

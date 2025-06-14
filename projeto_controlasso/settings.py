@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'app_controlasso',
     'users',
     'rest_framework',
+    'core',
 ]
 
 MIDDLEWARE = [

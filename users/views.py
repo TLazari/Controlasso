@@ -8,12 +8,6 @@ from django.urls import reverse
 from .forms import LoginForm, RegisterForm
 
 # Create your views here.
-
-def home_TEMPORARIA(request):
-    return render(request,
-        "users/pages/home_TEMPORARIA.html")
-
-
 def register_view(request):
     """View para renderizar a página de register."""
     register_form_data = request.session.get("register_form_data", None)
