@@ -51,7 +51,5 @@ class Favorita(models.Model):
     acao = models.ForeignKey(Acao, on_delete=models.CASCADE, related_name='favoritada_por')
 
     class Meta:
-       db_table = 'tb_cad_favorita'
-
-    class Meta:
         unique_together = ('usuario', 'acao') # Garante que um usuário não favorite a mesma ação duas vezes
+        db_table = 'tb_cad_favorita'
