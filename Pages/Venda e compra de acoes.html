@@ -15,22 +15,100 @@
 
   <main class="container">
     <h2>📊 Venda/Compra de Ações</h2>
-    <table>
-      <tr><th>Código</th><th>Tipo</th><th>Quantidade</th><th>Valor</th></tr>
-      <tr><td>PETR4</td><td>Compra</td><td>100</td><td>R$ 2.500,00</td></tr>
-      <tr><td>VALE3</td><td>Venda</td><td>50</td><td>R$ 3.000,00</td></tr>
+    <table border="1" cellspacing="0" cellpadding="6">
+      <thead>
+        <tr><th>Código</th><th>Tipo</th><th>Quantidade</th><th>Data</th><th>Ações</th></tr>
+      </thead>
+      <tbody id="operacoes-list">
+        <!-- Linhas preenchidas pelo JS -->
+      </tbody>
     </table>
-  </main>
 
-<main class="buttons">
-    <a class="finance-button" href="INCLUIR.html">📊 INCLUIR</a>
-  <a class="finance-button" href="EXCLUIR.html">📊 EXCLUIR</a>
-   <a class="finance-button" href="ALTERAR.html">📊 ALTERAR</a>
-    <a class="finance-button" href="CONSULTAR.html">📊 CONSULTAR</a>
-</main>
+    <h3>Registrar nova operação</h3>
+    <form id="form-operacao">
+      <label>Usuário ID: <input type="number" id="usuario_operacao" required></label><br>
+      <label>Ação ID: <input type="number" id="acao_operacao" required></label><br>
+      <label>Quantidade: <input type="number" id="quantidade_operacao" required></label><br>
+      <label>Tipo: 
+        <select id="tipo_operacao" required>
+          <option value="COMPRA">Compra</option>
+          <option value="VENDA">Venda</option>
+        </select>
+      </label><br>
+      <button type="submit">Adicionar</button>
+    </form>
+  </main>
 
   <footer>
     <p>&copy; 2025 Controla$$o</p>
   </footer>
+
+  <script>
+    const apiCompraVenda = 'http://localhost:8000/api/compras-vendas/';
+
+    async function listarOperacoes() {
+      const response = await fetch(apiCompraVenda);
+      const operacoes = await response.json();
+
+      const tbody = document.getElementById('operacoes-list');
+      tbody.innerHTML = '';
+
+      operacoes.forEach(op => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${op.acao}</td>
+          <td>${op.tipo}</td>
+          <td>${op.quantidade}</td>
+          <td>${new Date(op.data).toLocaleDateString()}</td>
+          <td>
+            <button onclick="excluirOperacao(${op.id})">Excluir</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function adicionarOperacao(dados) {
+      const response = await fetch(apiCompraVenda, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(dados)
+      });
+
+      if (response.ok) {
+        alert('Operação adicionada com sucesso!');
+        listarOperacoes();
+        document.getElementById('form-operacao').reset();
+      } else {
+        alert('Erro ao adicionar operação.');
+      }
+    }
+
+    async function excluirOperacao(id) {
+      if (!confirm('Confirma exclusão da operação?')) return;
+
+      const response = await fetch(apiCompraVenda + id + '/', { method: 'DELETE' });
+
+      if (response.ok) {
+        alert('Operação excluída!');
+        listarOperacoes();
+      } else {
+        alert('Erro ao excluir operação.');
+      }
+    }
+
+    document.getElementById('form-operacao').addEventListener('submit', e => {
+      e.preventDefault();
+      const dados = {
+        usuario: Number(document.getElementById('usuario_operacao').value),
+        acao: Number(document.getElementById('acao_operacao').value),
+        quantidade: Number(document.getElementById('quantidade_operacao').value),
+        tipo: document.getElementById('tipo_operacao').value
+      };
+      adicionarOperacao(dados);
+    });
+
+    window.onload = listarOperacoes;
+  </script>
 </body>
 </html>

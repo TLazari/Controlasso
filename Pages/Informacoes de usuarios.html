@@ -13,15 +13,49 @@
 
   <main class="container">
     <h2>👷 Informações de Usuários</h2>
-    <table>
-      <tr><th>Nome</th><th>Email</th><th>Perfil</th></tr>
-      <tr><td>João Silva</td><td>joao@email.com</td><td>Administrador</td></tr>
-      <tr><td>Maria Souza</td><td>maria@email.com</td><td>Usuário</td></tr>
+    <table border="1" cellspacing="0" cellpadding="6">
+      <thead>
+        <tr><th>Nome</th><th>Email</th><th>Perfil</th></tr>
+      </thead>
+      <tbody id="usuarios-list">
+        <!-- Linhas preenchidas via JS -->
+      </tbody>
     </table>
   </main>
 
   <footer>
     <p>&copy; 2025 Controla$$o</p>
   </footer>
+
+  <script>
+    const apiUsuarios = 'http://localhost:8000/api/usuarios/';
+
+    async function carregarUsuarios() {
+      try {
+        const response = await fetch(apiUsuarios);
+        const usuarios = await response.json();
+
+        const tbody = document.getElementById('usuarios-list');
+        tbody.innerHTML = '';
+
+        usuarios.forEach(user => {
+          // Definindo perfil baseado em is_staff como exemplo
+          const perfil = user.is_staff ? 'Administrador' : 'Usuário';
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${user.first_name} ${user.last_name}</td>
+            <td>${user.email}</td>
+            <td>${perfil}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar usuários:', error);
+      }
+    }
+
+    window.onload = carregarUsuarios;
+  </script>
 </body>
 </html>

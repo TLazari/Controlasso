@@ -1,55 +1,53 @@
 from django.db import models
-from django.contrib.auth.models import User # Importa o modelo de usuário do Django
+from django.contrib.auth.models import User
+
 
 class Conta(models.Model):
-    # O 'id' é criado automaticamente pelo Django
-    numero_conta = models.CharField(max_length=20, unique=True)
-    saldo = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='conta')
-    class Meta:
-        db_table = 'tb_cad_conta'
+    # Conta bancária do usuário
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contas')
+    saldo = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'Conta de {self.user.username} - Saldo: {self.saldo}'
+
 
 class Transferencia(models.Model):
-    # O 'id' é criado automaticamente
-    remetente = models.ForeignKey(Conta, on_delete=models.CASCADE, related_name='transferencias_enviadas')
-    destinatario = models.ForeignKey(Conta, on_delete=models.CASCADE, related_name='transferencias_recebidas')
+    # Transferência entre contas
+    conta_origem = models.ForeignKey(Conta, on_delete=models.CASCADE, related_name='transferencias_enviadas')
+    conta_destino = models.ForeignKey(Conta, on_delete=models.CASCADE, related_name='transferencias_recebidas')
     valor = models.DecimalField(max_digits=10, decimal_places=2)
-    data = models.DateTimeField(auto_now_add=True) # Preenchido automaticamente na criação
-
-    class Meta:
-        db_table = 'tb_acao_transferencia'
-
-class Acao(models.Model):
-    # O 'id' é criado automaticamente
-    nome = models.CharField(max_length=100)
-    codigo = models.CharField(max_length=10, unique=True)
-    preco_atual = models.DecimalField(max_digits=10, decimal_places=2)
-    # Pode adicionar data da última atualização do preço, por exemplo
-    data_atualizacao = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'tb_acao'
-
-class CompraVendaAcao(models.Model):
-    # O 'id' é criado automaticamente
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='compras_vendas_acoes') # Liga ao User do Django
-    acao = models.ForeignKey(Acao, on_delete=models.CASCADE, related_name='operacoes_de_acao')
-    quantidade = models.IntegerField()
-    TIPO_CHOICES = [
-        ('COMPRA', 'Compra'),
-        ('VENDA', 'Venda'),
-    ]
-    tipo = models.CharField(max_length=6, choices=TIPO_CHOICES)
     data = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        db_table = 'tb_acao_compra_venda_acao'
+    def __str__(self):
+        return f'{self.conta_origem} -> {self.conta_destino} : {self.valor}'
+
+
+class Acao(models.Model):
+    # Cadastro de ações disponíveis
+    codigo = models.CharField(max_length=10)
+    nome = models.CharField(max_length=100)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.codigo} - {self.nome}'
+
+
+class CompraVendaAcao(models.Model):
+    # Registro de compra e venda de ações
+    conta = models.ForeignKey(Conta, on_delete=models.CASCADE, related_name='acoes')
+    acao = models.ForeignKey(Acao, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField()
+    tipo = models.CharField(max_length=4, choices=(('COMP', 'Compra'), ('VEND', 'Venda')))
+    data = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.tipo} {self.quantidade} de {self.acao.codigo} - {self.conta}'
+
 
 class Favorita(models.Model):
-    # O 'id' é criado automaticamente
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='acoes_favoritas') # Liga ao User do Django
-    acao = models.ForeignKey(Acao, on_delete=models.CASCADE, related_name='favoritada_por')
+    # Ações favoritas do usuário
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favoritas')
+    acao = models.ForeignKey(Acao, on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = ('usuario', 'acao') # Garante que um usuário não favorite a mesma ação duas vezes
-        db_table = 'tb_cad_favorita'
+    def __str__(self):
+        return f'{self.user.username} - {self.acao.codigo}'

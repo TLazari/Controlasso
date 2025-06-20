@@ -13,15 +13,88 @@
 
   <main class="container">
     <h2>📈 Ações Favoritas</h2>
-    <table>
-      <tr><th>Ação</th><th>Preço</th><th>Variação</th></tr>
-      <tr><td>ITUB4</td><td>R$ 29,30</td><td>+1,2%</td></tr>
-      <tr><td>BBDC3</td><td>R$ 23,90</td><td>-0,5%</td></tr>
+
+    <!-- Aqui a tabela será preenchida dinamicamente -->
+    <table id="tabela-favoritas" border="1" cellspacing="0" cellpadding="6">
+      <thead>
+        <tr>
+          <th>Ação</th>
+          <th>Preço Atual</th>
+          <th>Data Atualização</th>
+          <th>Remover</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Linhas serão inseridas aqui pelo JS -->
+      </tbody>
     </table>
   </main>
 
   <footer>
     <p>&copy; 2025 Controla$$o</p>
   </footer>
+
+  <script>
+    const apiFavoritas = 'http://localhost:8000/api/favoritas/';
+    const apiAcoes = 'http://localhost:8000/api/acoes/';
+
+    // Vamos buscar as ações favoritas e exibir na tabela
+    async function carregarFavoritas() {
+      try {
+        // Pega as favoritas
+        const resFav = await fetch(apiFavoritas);
+        const favoritas = await resFav.json();
+
+        // Pega as ações para buscar os dados detalhados
+        const resAcoes = await fetch(apiAcoes);
+        const acoes = await resAcoes.json();
+
+        const tbody = document.querySelector('#tabela-favoritas tbody');
+        tbody.innerHTML = '';
+
+        favoritas.forEach(fav => {
+          // Acha a ação correspondente para exibir nome e preço
+          const acao = acoes.find(a => a.id === fav.acao);
+
+          if (acao) {
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+              <td>${acao.codigo} - ${acao.nome}</td>
+              <td>R$ ${acao.preco_atual.toFixed(2)}</td>
+              <td>${new Date(acao.data_atualizacao).toLocaleString()}</td>
+              <td><button onclick="removerFavorita(${fav.id})">Remover</button></td>
+            `;
+
+            tbody.appendChild(tr);
+          }
+        });
+
+      } catch (error) {
+        console.error('Erro ao carregar ações favoritas:', error);
+      }
+    }
+
+    // Função para remover uma ação favorita
+    async function removerFavorita(id) {
+      if (!confirm('Tem certeza que deseja remover esta ação favorita?')) return;
+
+      try {
+        const res = await fetch(apiFavoritas + id + '/', { method: 'DELETE' });
+        if (res.ok) {
+          alert('Favorita removida com sucesso!');
+          carregarFavoritas();
+        } else {
+          alert('Erro ao remover favorita.');
+        }
+      } catch (error) {
+        alert('Erro na comunicação com o servidor.');
+        console.error(error);
+      }
+    }
+
+    // Carrega as favoritas ao abrir a página
+    window.onload = carregarFavoritas;
+  </script>
 </body>
 </html>

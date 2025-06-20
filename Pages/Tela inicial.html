@@ -1,27 +1,32 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>Tela Inicial</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <div class="logo">💰 Controla$$o</div>
-    <nav><a href="index.html">← Voltar</a></nav>
-  </header>
+<main class="container">
+  <h2>🖇️ Tela Inicial</h2>
+  <p>Bem-vindo! Aqui estão suas últimas atividades:</p>
+  <ul id="ultimas-atividades">
+    <!-- JS vai preencher aqui -->
+  </ul>
+</main>
 
-  <main class="container">
-    <h2>🖇️ Tela Inicial</h2>
-    <p>Bem-vindo! Aqui estão suas últimas atividades:</p>
-    <ul>
-      <li>Login realizado em 16/06/2025</li>
-      <li>Ação PETR4 adicionada</li>
-    </ul>
-  </main>
+<script>
+  const apiCompraVenda = 'http://localhost:8000/api/compras-vendas/';
 
-  <footer>
-    <p>&copy; 2025 Controla$$o</p>
-  </footer>
-</body>
-</html>
+  async function carregarUltimasAtividades() {
+    try {
+      const response = await fetch(apiCompraVenda);
+      const operacoes = await response.json();
+
+      const ul = document.getElementById('ultimas-atividades');
+      ul.innerHTML = '';
+
+      // Pegando só as 5 últimas operações
+      operacoes.slice(-5).reverse().forEach(op => {
+        const li = document.createElement('li');
+        li.textContent = `Ação ${op.acao} - ${op.tipo} de ${op.quantidade} unidades em ${new Date(op.data).toLocaleDateString()}`;
+        ul.appendChild(li);
+      });
+    } catch (error) {
+      console.error('Erro ao carregar últimas atividades:', error);
+    }
+  }
+
+  window.onload = carregarUltimasAtividades;
+</script>
