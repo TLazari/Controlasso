@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+{% load filters %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>{{ stock.code }} - {{ stock.name }}</h2>
+    <div>
+        <a href="{% url 'trade' %}" class="btn btn-secondary btn-sm me-2">Voltar</a>
+        {% if not is_favorite %}
+        <form method="post" action="{% url 'add_favorite' stock.id %}" class="d-inline">
+            {% csrf_token %}
+            <button class="btn btn-outline-warning btn-sm">⭐ Adicionar aos favoritos</button>
+        </form>
+        {% else %}
+        <span class="badge text-bg-warning">Favorito</span>
+        {% endif %}
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <p><strong>Preço atual:</strong> {{ stock_data.price }}</p>
+                <p><strong>Variação do dia:</strong> {{ stock_data.variation_percent|floatformat:2 }}% ({{ stock_data.variation_value }})</p>
+                <p><strong>Volume:</strong> {{ stock_data.volume }}</p>
+                <p><strong>Última atualização:</strong> {{ stock_data.last_update }}</p>
+                <a href="{{ stock_data.yf_url }}" target="_blank" class="btn btn-link p-0">Ver histórico completo</a>
+            </div>
+            <div class="col-md-4">
+                <canvas id="priceChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Operar</h5>
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+        <form method="post" id="tradeForm" class="row gy-2 gx-3 align-items-end">
+            {% csrf_token %}
+            <div class="col-md-3">
+                {{ form.trade_type.label_tag }}
+                {{ form.trade_type }}
+            </div>
+            <div class="col-md-3">
+                {{ form.quantity.label_tag }}
+                {{ form.quantity }}
+            </div>
+            <div class="col-md-3">
+                {{ form.price.label_tag }}
+                {{ form.price }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Total</label>
+                <input type="text" id="totalValue" class="form-control" readonly>
+            </div>
+            <div class="col-md-12">
+                <p class="mt-2">Saldo disponível: {{ account.balance|brl }}</p>
+                <button type="submit" class="btn btn-primary">Confirmar Operação</button>
+            </div>
+        </form>
+    </div>
+</div>
+<h4>Histórico de Operações</h4>
+<table class="table">
+    <thead>
+        <tr><th>Data</th><th>Tipo</th><th>Quantidade</th><th>Valor unitário</th><th>Total</th></tr>
+    </thead>
+    <tbody>
+    {% for tr in trades %}
+        <tr>
+            <td>{{ tr.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ tr.get_trade_type_display }}</td>
+            <td>{{ tr.quantity }}</td>
+            <td>{{ tr.price }}</td>
+            <td>{{ tr.quantity|multiply:tr.price }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">Nenhuma operação.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{{ hist_dates|json_script:"hist-dates" }}
+{{ hist_prices|json_script:"hist-prices" }}
+{% endblock %}
+{% block extra_js %}
+<script>
+const qty = document.getElementById('id_quantity');
+const price = document.getElementById('id_price');
+const total = document.getElementById('totalValue');
+function calc(){
+    const q = parseFloat(qty.value) || 0;
+    const p = parseFloat(price.value) || 0;
+    total.value = (q*p).toFixed(2);
+}
+qty.addEventListener('input', calc);
+price.addEventListener('input', calc);
+calc();
+const labels = JSON.parse(document.getElementById('hist-dates').textContent);
+const prices = JSON.parse(document.getElementById('hist-prices').textContent);
+new Chart(document.getElementById('priceChart').getContext('2d'), {
+    type: 'line',
+    data: { labels: labels, datasets: [{ label: 'Preço', data: prices, borderColor: 'rgb(13,110,253)', tension: 0.3 }] },
+    options: { responsive: true, scales: { y: { beginAtZero: false } } }
+});
+</script>
+{% endblock %}
