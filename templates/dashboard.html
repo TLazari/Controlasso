@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load filters %}
+{% block content %}
+<h2 class="mb-4">Painel</h2>
+
+<div class="row mb-4">
+    <div class="col" style="flex:0 0 30%;max-width:30%">
+        <div class="card text-center p-4 balance-card h-100">
+            <div class="card-body">
+                <p class="text-muted small mb-2">
+                    nº da conta <span id="accountNumber" class="fw-bold">{{ account.account_number }}</span>
+                    <i id="copyAccount" class="bi bi-clipboard ms-1" role="button" data-bs-toggle="tooltip" title="Copiar"></i>
+                </p>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <h2 id="balanceValue" class="mb-0" data-value="{{ account.balance|brl }}">{{ account.balance|brl }}</h2>
+                    <button id="toggleBalance" class="btn btn-outline-secondary btn-sm ms-3">Ocultar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col" style="flex:0 0 70%;max-width:70%">
+        <div class="card h-100">
+            <div class="card-body">
+                <form method="get" class="row row-cols-auto g-2 mb-3">
+                    <div class="col">
+                        <input type="datetime-local" name="start" value="{{ start }}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col">
+                        <input type="datetime-local" name="end" value="{{ end }}" class="form-control form-control-sm">
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                    </div>
+                    <div class="col">
+                        <select id="chartSelect" class="form-select form-select-sm">
+                            <option value="transfers">Movimentações</option>
+                            <option value="actions">Ações</option>
+                            <option value="both" selected>Sobrepor</option>
+                        </select>
+                    </div>
+                </form>
+                <canvas id="transferChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">Últimas Entradas</div>
+            <ul class="list-group list-group-flush">
+                {% for t in transfers_in|slice:":5" %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ t.sender.username }}</span>
+                        <span class="text-success">{{ t.amount|brl }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Nenhuma.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">Últimas Saídas</div>
+            <ul class="list-group list-group-flush">
+                {% for t in transfers_out|slice:":5" %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ t.recipient.username }}</span>
+                        <span class="text-danger">{{ t.amount|brl }}</span>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Nenhuma.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">Operações em Ações</div>
+            <ul class="list-group list-group-flush">
+                {% for tr in trades %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>{{ tr.created_at|date:"d/m/Y H:i" }}</span>
+                    <span>{{ tr }}</span>
+                </li>
+                {% empty %}
+                <li class="list-group-item">Nenhuma.</li>
+                {% endfor %}
+            </ul>
+            <div class="card-body">
+                <a href="{% url 'trade_history' %}" class="btn btn-primary btn-sm">Visualizar todas</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">Operações Favoritas</div>
+            <ul class="list-group list-group-flush">
+                {% for f in favorites %}
+                    <li class="list-group-item">{{ f.stock.code }}</li>
+                {% empty %}
+                    <li class="list-group-item">Nenhuma.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{{ transfers_data|json_script:"transfers-data" }}
+{{ trades_data|json_script:"trades-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const balanceValue = document.getElementById('balanceValue');
+const toggleBtn = document.getElementById('toggleBalance');
+const copyBtn = document.getElementById('copyAccount');
+copyBtn.addEventListener('click', () => {
+    const text = document.getElementById('accountNumber').textContent;
+    const finished = () => {
+        copyBtn.classList.remove('bi-clipboard');
+        copyBtn.classList.add('bi-clipboard-check');
+        setTimeout(() => {
+            copyBtn.classList.add('bi-clipboard');
+            copyBtn.classList.remove('bi-clipboard-check');
+        }, 2000);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(finished);
+    } else {
+        const temp = document.createElement('input');
+        temp.style.position = 'absolute';
+        temp.style.left = '-1000px';
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        finished();
+    }
+});
+toggleBtn.addEventListener('click', () => {
+    if (balanceValue.textContent === '••••••') {
+        balanceValue.textContent = balanceValue.dataset.value;
+        toggleBtn.textContent = 'Ocultar';
+    } else {
+        balanceValue.textContent = '••••••';
+        toggleBtn.textContent = 'Mostrar';
+    }
+});
+const transfersData = JSON.parse(document.getElementById('transfers-data').textContent);
+const tradeData = JSON.parse(document.getElementById('trades-data').textContent);
+const labels = [...new Set([
+    ...transfersData.map(d => d.date),
+    ...tradeData.map(d => d.date)
+])].sort();
+const transferMap = Object.fromEntries(transfersData.map(d => [d.date, d.amount]));
+const tradeMap = Object.fromEntries(tradeData.map(d => [d.date, d.amount]));
+const transferAmounts = labels.map(l => transferMap[l] || 0);
+const tradeAmounts = labels.map(l => tradeMap[l] || 0);
+
+const datasets = {
+    transfers: [{
+        label: 'Movimentações',
+        data: transferAmounts,
+        borderColor: 'rgb(220, 53, 69)',
+        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+        tension: 0.3
+    }],
+    actions: [{
+        label: 'Ações',
+        data: tradeAmounts,
+        borderColor: 'rgb(13, 110, 253)',
+        backgroundColor: 'rgba(13, 110, 253, 0.2)',
+        tension: 0.3
+    }],
+    both: [{
+        label: 'Movimentações',
+        data: transferAmounts,
+        borderColor: 'rgb(220, 53, 69)',
+        backgroundColor: 'rgba(220, 53, 69, 0.2)',
+        tension: 0.3
+    }, {
+        label: 'Ações',
+        data: tradeAmounts,
+        borderColor: 'rgb(13, 110, 253)',
+        backgroundColor: 'rgba(13, 110, 253, 0.2)',
+        tension: 0.3
+    }]
+};
+
+const ctx = document.getElementById('transferChart').getContext('2d');
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: labels, datasets: datasets.both },
+    options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+const chartSelect = document.getElementById('chartSelect');
+chartSelect.addEventListener('change', () => {
+    chart.data.datasets = datasets[chartSelect.value];
+    chart.update();
+});
+</script>
+{% endblock %}
