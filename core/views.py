@@ -1,23 +1,23 @@
-from django import forms
-from django.contrib.auth import login, logout
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
+from django.views.generic import FormView
+from django.urls import reverse_lazy
+from django import forms
 from django.forms.forms import NON_FIELD_ERRORS
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
-from django.views.generic import FormView
+from django.contrib.auth.models import User
 
+from .models import Account, Transfer, Trade, Stock, FavoriteStock
 from .forms import (
-    AdminSetUserPasswordForm,
-    BootstrapUserCreationForm,
-    DirectPasswordResetForm,
-    TradeForm,
     TransferForm,
+    TradeForm,
+    BootstrapUserCreationForm,
+    AdminSetUserPasswordForm,
+    DirectPasswordResetForm,
 )
-from .models import Account, FavoriteStock, Stock, Trade, Transfer
 
 
 class AdminPasswordResetView(LoginRequiredMixin, UserPassesTestMixin, FormView):
@@ -62,9 +62,8 @@ def dashboard(request):
 
     start = request.GET.get("start")
     end = request.GET.get("end")
-    from datetime import datetime, timedelta
-
     from django.utils import timezone
+    from datetime import datetime, timedelta
 
     if start:
         try:
@@ -211,8 +210,8 @@ def operate_stock(request, stock_id):
     """Detailed page for trading a specific stock."""
     stock = Stock.objects.get(id=stock_id)
 
-    import yfinance as yf
     from django.core.cache import cache
+    import yfinance as yf
 
     cache_key = f"stock_data_{stock.code}"
     stock_data = cache.get(cache_key)
@@ -334,8 +333,8 @@ def stock_info(request, stock_id):
     """Return chart and price change data for a single stock."""
     stock = get_object_or_404(Stock, id=stock_id)
 
-    import yfinance as yf
     from django.core.cache import cache
+    import yfinance as yf
 
     cache_key = f"stock_chart_{stock.code}"
     data = cache.get(cache_key)
@@ -410,7 +409,6 @@ def password_reset_direct(request):
     """Permite alterar senha e saldo de todos os usuários."""
 
     from django.contrib.auth.models import User
-
     from .forms import AdminUserUpdateForm
 
     if not request.user.is_staff:
