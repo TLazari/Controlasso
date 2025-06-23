@@ -198,4 +198,3 @@ Clique em "Create pull request".
 🎉 Pronto! Agora a equipe pode revisar seu código, sugerir melhorias e, quando tudo estiver certo, alguém integrará suas alterações à branch main.
 
 Bons commits e boas contribuições! 💪🚀
-"""
