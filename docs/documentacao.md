@@ -1,10 +1,10 @@
 # Documentação de Software
 
-Este documento descreve a visão inicial do projeto **CodexFinancial**.
+Este documento descreve a visão inicial do projeto **Controlasso**.
 
 ## 1. Integrantes e Título
 
-- **Título do Projeto:** CodexFinancial
+- **Título do Projeto:** Controlasso
 - **Integrantes:** Preencher com os nomes da equipe.
 
 ## 2. Introdução
@@ -15,7 +15,7 @@ Sistema de gerenciamento de contas e negociação de ações, com dashboards de 
 
 ### 3.1 Nome do Sistema
 
-CodexFinancial
+Controlasso
 
 ### 3.2 Justificativa
 
@@ -93,5 +93,5 @@ Sistema web para movimentação de contas e negociação de ações de forma sim
 
 ## 6. Conclusão
 
-Esta documentação apresenta um panorama inicial do projeto CodexFinancial. O progresso das tarefas deve ser acompanhado via sprints, garantindo que cada ponto desta lista seja revisado e concluído.
+Esta documentação apresenta um panorama inicial do projeto Controlasso. O progresso das tarefas deve ser acompanhado via sprints, garantindo que cada ponto desta lista seja revisado e concluído.
 
