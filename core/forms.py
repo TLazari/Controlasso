@@ -12,6 +12,20 @@ from .models import Transfer, Trade, Stock, Account
 
 
 class TransferForm(forms.ModelForm):
+    """
+    Formulário para criar uma transferência entre contas.
+    
+    Atributos:
+        account (CharField): Número da conta de destino
+        recipient (CharField): Nome do usuário de destino
+        amount (DecimalField): Valor a ser transferido
+        
+    Métodos:
+        __init__: Inicializa o formulário com o usuário atual
+        clean_account: Valida se a conta existe e não é a do próprio usuário
+        clean_amount: Valida se o saldo é suficiente
+        save: Salva a transferência após validação
+    """
     account = forms.CharField(
         label="Conta",
         max_length=20,
@@ -39,6 +53,15 @@ class TransferForm(forms.ModelForm):
         self.fields["recipient"].initial = ""
 
     def clean_account(self):
+        """
+        Valida o número da conta de destino.
+        
+        Returns:
+            O número da conta validado
+            
+        Raises:
+            ValidationError: Se a conta não existir ou for do próprio usuário
+        """
         account_number = self.cleaned_data.get("account")
         try:
             account = Account.objects.get(account_number=account_number)
@@ -50,6 +73,15 @@ class TransferForm(forms.ModelForm):
         return account_number
 
     def clean_amount(self):
+        """
+        Valida o valor da transferência.
+        
+        Returns:
+            O valor validado
+            
+        Raises:
+            ValidationError: Se o saldo for insuficiente
+        """
         amount = self.cleaned_data.get("amount")
         if self.current_user and amount is not None:
             if self.current_user.account.balance < amount:
@@ -57,6 +89,15 @@ class TransferForm(forms.ModelForm):
         return amount
 
     def save(self, commit=True):
+        """
+        Salva a transferência após validação.
+        
+        Args:
+            commit (bool): Se deve salvar no banco de dados
+            
+        Returns:
+            O objeto Transfer criado
+        """
         transfer = super().save(commit=False)
         transfer.recipient = getattr(self, "recipient_user", None)
         if commit:
@@ -65,6 +106,19 @@ class TransferForm(forms.ModelForm):
 
 
 class TradeForm(forms.Form):
+    """
+    Formulário para realizar operações de compra/venda de ações.
+    
+    Atributos:
+        stock (ModelChoiceField): A ação a ser negociada
+        quantity (IntegerField): Quantidade de ações
+        trade_type (ChoiceField): Tipo de operação (compra/venda)
+        price (DecimalField): Preço da ação
+        
+    Métodos:
+        __init__: Inicializa o formulário com o usuário atual
+        clean: Valida os dados do formulário
+    """
     stock = forms.ModelChoiceField(
         queryset=Stock.objects.all(), widget=forms.Select(attrs={"class": "form-select"})
     )
@@ -90,6 +144,16 @@ class TradeForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean(self):
+        """
+        Valida os dados do formulário.
+        
+        Returns:
+            Dados limpos do formulário
+            
+        Raises:
+            ValidationError: Se o saldo for insuficiente para compra ou 
+                            se a quantidade for insuficiente para venda
+        """
         cleaned_data = super().clean()
         if not self.user:
             return cleaned_data
@@ -128,6 +192,18 @@ class TradeForm(forms.Form):
 
 
 class StockTradeForm(forms.Form):
+    """
+    Formulário para operações de compra/venda na página de detalhes da ação.
+    
+    Atributos:
+        trade_type (ChoiceField): Tipo de operação (compra/venda)
+        quantity (IntegerField): Quantidade de ações
+        price (DecimalField): Preço da ação
+        
+    Métodos:
+        __init__: Inicializa o formulário com o usuário e ação atuais
+        clean: Valida os dados do formulário
+    """
     trade_type = forms.ChoiceField(
         label="Tipo",
         choices=[("buy", "Compra"), ("sell", "Venda")],
@@ -151,6 +227,16 @@ class StockTradeForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean(self):
+        """
+        Valida os dados do formulário.
+        
+        Returns:
+            Dados limpos do formulário
+            
+        Raises:
+            ValidationError: Se o saldo for insuficiente para compra ou 
+                            se a quantidade for insuficiente para venda
+        """
         cleaned_data = super().clean()
         if not self.user or not self.stock:
             return cleaned_data
@@ -186,8 +272,13 @@ class StockTradeForm(forms.Form):
 
 
 class BootstrapUserCreationForm(UserCreationForm):
-    """UserCreationForm with Bootstrap CSS classes"""
-
+    """
+    Formulário de criação de usuário com classes CSS do Bootstrap.
+    
+    Métodos:
+        __init__: Adiciona classes Bootstrap aos campos do formulário
+        clean_password2: Valida se as senhas coincidem
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.visible_fields():
@@ -202,8 +293,12 @@ class BootstrapUserCreationForm(UserCreationForm):
 
 
 class BootstrapAuthenticationForm(AuthenticationForm):
-    """AuthenticationForm with Bootstrap CSS classes"""
-
+    """
+    Formulário de autenticação com classes CSS do Bootstrap.
+    
+    Métodos:
+        __init__: Adiciona classes Bootstrap aos campos do formulário
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.visible_fields():
@@ -211,7 +306,12 @@ class BootstrapAuthenticationForm(AuthenticationForm):
 
 
 class BootstrapPasswordResetForm(PasswordResetForm):
-    """PasswordResetForm with Bootstrap CSS classes"""
+    """
+    Formulário de reset de senha com classes CSS do Bootstrap.
+    
+    Métodos:
+        __init__: Adiciona classes Bootstrap aos campos do formulário
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -220,7 +320,12 @@ class BootstrapPasswordResetForm(PasswordResetForm):
 
 
 class BootstrapSetPasswordForm(SetPasswordForm):
-    """SetPasswordForm with Bootstrap CSS classes"""
+    """
+    Formulário de definição de senha com classes CSS do Bootstrap.
+    
+    Métodos:
+        __init__: Adiciona classes Bootstrap aos campos do formulário
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -229,7 +334,12 @@ class BootstrapSetPasswordForm(SetPasswordForm):
 
 
 class BootstrapPasswordChangeForm(PasswordChangeForm):
-    """PasswordChangeForm with Bootstrap CSS classes"""
+    """
+    Formulário de mudança de senha com classes CSS do Bootstrap.
+    
+    Métodos:
+        __init__: Adiciona classes Bootstrap aos campos do formulário
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -238,6 +348,18 @@ class BootstrapPasswordChangeForm(PasswordChangeForm):
 
 
 class AdminSetUserPasswordForm(forms.Form):
+    """
+    Formulário para administradores definirem senhas de usuários.
+    
+    Atributos:
+        username (CharField): Nome de usuário
+        new_password (CharField): Nova senha
+        
+    Métodos:
+        __init__: Inicializa o formulário
+        clean_username: Valida se o usuário existe
+        save: Salva a nova senha do usuário
+    """
     username = forms.CharField(label="Usuário")
     new_password = forms.CharField(label="Nova senha", widget=forms.PasswordInput)
 
@@ -248,6 +370,15 @@ class AdminSetUserPasswordForm(forms.Form):
         self.user_obj = None
 
     def clean_username(self):
+        """
+        Valida se o usuário existe.
+        
+        Returns:
+            O nome de usuário
+            
+        Raises:
+            ValidationError: Se o usuário não existir
+        """
         username = self.cleaned_data.get("username")
         try:
             self.user_obj = User.objects.get(username=username)
@@ -256,6 +387,12 @@ class AdminSetUserPasswordForm(forms.Form):
         return username
 
     def save(self):
+        """
+        Salva a nova senha do usuário.
+        
+        Returns:
+            O usuário com a senha atualizada
+        """
         from django.contrib.auth.password_validation import validate_password
         password = self.cleaned_data["new_password"]
         validate_password(password, self.user_obj)
@@ -265,8 +402,17 @@ class AdminSetUserPasswordForm(forms.Form):
 
 
 class DirectPasswordResetForm(forms.Form):
-    """Reset a user's password directly by email."""
-
+    """
+    Formulário para resetar senha diretamente por email.
+    
+    Atributos:
+        email (EmailField): Email do usuário
+        new_password1 (CharField): Nova senha
+        new_password2 (CharField): Confirmação da nova senha
+        
+    Métodos:
+        clean: Valida se as senhas coincidem
+    """
     email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
     new_password1 = forms.CharField(
         label="Nova senha",
@@ -278,6 +424,15 @@ class DirectPasswordResetForm(forms.Form):
     )
 
     def clean(self):
+        """
+        Valida se as senhas coincidem.
+        
+        Returns:
+            Dados limpos do formulário
+            
+        Raises:
+            ValidationError: Se as senhas não coincidirem
+        """
         cleaned_data = super().clean()
         p1 = cleaned_data.get("new_password1")
         p2 = cleaned_data.get("new_password2")
@@ -287,8 +442,18 @@ class DirectPasswordResetForm(forms.Form):
 
 
 class AdminUserUpdateForm(forms.Form):
-    """Formulário para alterar senha e saldo de um usuário."""
-
+    """
+    Formulário para alterar senha e saldo de um usuário.
+    
+    Atributos:
+        user_id (IntegerField): ID do usuário
+        new_password1 (CharField): Nova senha
+        balance (DecimalField): Saldo da conta
+        
+    Métodos:
+        clean: Valida os dados do formulário
+        save: Salva as alterações no usuário
+    """
     user_id = forms.IntegerField(widget=forms.HiddenInput)
     new_password1 = forms.CharField(
         label="Nova senha",
@@ -307,6 +472,12 @@ class AdminUserUpdateForm(forms.Form):
         return cleaned_data
 
     def save(self):
+        """
+        Salva as alterações no usuário.
+        
+        Returns:
+            O usuário atualizado
+        """
         from django.contrib.auth.models import User
 
         user = User.objects.get(id=self.cleaned_data["user_id"])

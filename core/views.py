@@ -21,19 +21,43 @@ from .forms import (
 
 
 class AdminPasswordResetView(LoginRequiredMixin, UserPassesTestMixin, FormView):
+    """
+    View para resetar senhas de usuários (apenas para administradores).
+    
+    Herda de:
+        LoginRequiredMixin: Requer login
+        UserPassesTestMixin: Requer que o usuário seja staff
+        FormView: Renderiza um formulário
+    
+    Atributos:
+        template_name: Nome do template a ser renderizado
+        form_class: Classe do formulário a ser usado
+        success_url: URL para redirecionar após sucesso
+    """
     template_name = "registration/admin_set_user_password.html"
     form_class = AdminSetUserPasswordForm
     success_url = reverse_lazy("password_change_done")
 
     def test_func(self):
+        """Verifica se o usuário é staff."""
         return self.request.user.is_staff
 
     def form_valid(self, form):
+        """Processa o formulário se for válido."""
         form.save()
         return super().form_valid(form)
 
 
 def register(request):
+    """
+    View para registro de novos usuários.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        Renderização do template de registro com o formulário
+    """
     if request.method == "POST":
         form = BootstrapUserCreationForm(request.POST)
         if form.is_valid():
@@ -47,7 +71,15 @@ def register(request):
 
 @login_required
 def logout_confirm(request):
-    """Display confirmation page and log the user out on POST."""
+    """
+    View para confirmar logout do usuário.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        Renderização do template de confirmação de logout
+    """
     if request.method == "POST":
         logout(request)
         return redirect("login")
@@ -56,6 +88,15 @@ def logout_confirm(request):
 
 @login_required
 def dashboard(request):
+    """
+    View principal do dashboard do usuário.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        Renderização do template do dashboard com dados do usuário
+    """
     account = request.user.account
     transfers_in = request.user.received_transfers.all()
     transfers_out = request.user.sent_transfers.all()
@@ -152,6 +193,15 @@ def dashboard(request):
 
 @login_required
 def make_transfer(request):
+    """
+    View para processar transferências entre contas.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        Renderização do template de transferência com formulário
+    """
     alert_message = None
     if request.method == "POST":
         form = TransferForm(request.POST, current_user=request.user)
@@ -177,7 +227,15 @@ def make_transfer(request):
 
 @login_required
 def account_info(request):
-    """Return the username associated with an account number."""
+    """
+    View para obter informações de uma conta a partir do número.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        JsonResponse com dados do usuário ou erro
+    """
     acc = request.GET.get("account")
     try:
         account = Account.objects.get(account_number=acc)
@@ -190,7 +248,15 @@ def account_info(request):
 
 @login_required
 def stock_list(request):
-    """Display the list of stocks with user's favorites highlighted."""
+    """
+    View para listar ações disponíveis com destaque para favoritas.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        Renderização do template de lista de ações
+    """
     stocks = list(Stock.objects.all())
     fav_ids = set(
         FavoriteStock.objects.filter(user=request.user).values_list("stock_id", flat=True)
@@ -207,7 +273,25 @@ def stock_list(request):
 
 @login_required
 def operate_stock(request, stock_id):
-    """Detailed page for trading a specific stock."""
+    """
+    View para a página de negociação de uma ação específica.
+
+    Essa view busca dados atualizados da ação usando a API do Yahoo Finance 
+    através da biblioteca `yfinance`, incluindo preço atual, variação, volume,
+    e histórico intradiário.
+
+    Os dados obtidos são armazenados em cache por 15 minutos para reduzir 
+    chamadas repetidas à API externa.
+
+    Args:
+        request (HttpRequest): Requisição HTTP do usuário autenticado.
+        stock_id (int): ID da ação a ser negociada.
+
+    Returns:
+        HttpResponse: Página HTML renderizada com informações da ação, 
+        formulário de compra/venda, histórico de negociações do usuário 
+        e dados adicionais da ação.
+    """
     stock = Stock.objects.get(id=stock_id)
 
     from django.core.cache import cache
@@ -330,7 +414,16 @@ def operate_stock(request, stock_id):
 
 @login_required
 def stock_info(request, stock_id):
-    """Return chart and price change data for a single stock."""
+    """
+    View para obter dados de uma ação para o gráfico.
+    
+    Args:
+        request: Objeto HttpRequest
+        stock_id: ID da ação
+        
+    Returns:
+        JsonResponse com dados do gráfico
+    """
     stock = get_object_or_404(Stock, id=stock_id)
 
     from django.core.cache import cache
@@ -358,7 +451,16 @@ def stock_info(request, stock_id):
 @require_POST
 @login_required
 def toggle_favorite_stock(request, stock_id):
-    """Add or remove a stock from the user's favorites."""
+    """
+    View para adicionar/remover uma ação dos favoritos.
+    
+    Args:
+        request: Objeto HttpRequest
+        stock_id: ID da ação
+        
+    Returns:
+        Redirecionamento para a página da ação
+    """
     stock = Stock.objects.get(id=stock_id)
     fav, created = FavoriteStock.objects.get_or_create(user=request.user, stock=stock)
     if not created:
@@ -369,7 +471,16 @@ def toggle_favorite_stock(request, stock_id):
 @require_POST
 @login_required
 def toggle_favorite_stock_list(request, stock_id):
-    """Toggle favorite status from the stock list view."""
+    """
+    View para alternar status de favorito a partir da lista de ações.
+    
+    Args:
+        request: Objeto HttpRequest
+        stock_id: ID da ação
+        
+    Returns:
+        Redirecionamento para a lista de ações
+    """
     stock = Stock.objects.get(id=stock_id)
     fav, created = FavoriteStock.objects.get_or_create(user=request.user, stock=stock)
     if not created:
@@ -380,6 +491,7 @@ def toggle_favorite_stock_list(request, stock_id):
 @require_POST
 @login_required
 def add_favorite(request, stock_id):
+    """Adiciona uma ação aos favoritos do usuário."""
     stock = Stock.objects.get(id=stock_id)
     FavoriteStock.objects.get_or_create(user=request.user, stock=stock)
     return redirect("operate_stock", stock_id=stock_id)
@@ -387,7 +499,15 @@ def add_favorite(request, stock_id):
 
 @login_required
 def trade_history(request):
-    """List all stock trades for the current user."""
+    """
+    View para listar todo o histórico de operações do usuário.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        Renderização do template de histórico de trades
+    """
     trades = Trade.objects.filter(user=request.user).order_by("-created_at")
     return render(request, "trade_history.html", {"trades": trades})
 
@@ -395,6 +515,15 @@ def trade_history(request):
 @require_POST
 @login_required
 def toggle_theme(request):
+    """
+    View para alternar entre tema claro e escuro.
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        JsonResponse com tema atualizado
+    """
     theme = request.POST.get("theme")
     if theme not in {"light", "dark"}:
         return JsonResponse({"error": "invalid"}, status=400)
@@ -406,8 +535,15 @@ def toggle_theme(request):
 
 @login_required
 def password_reset_direct(request):
-    """Permite alterar senha e saldo de todos os usuários."""
-
+    """
+    View para resetar senha e saldo de usuários (apenas para administradores).
+    
+    Args:
+        request: Objeto HttpRequest
+        
+    Returns:
+        Renderização do template de reset de senha
+    """
     from django.contrib.auth.models import User
     from .forms import AdminUserUpdateForm
 
@@ -452,6 +588,16 @@ def password_reset_direct(request):
 
 @login_required
 def delete_user(request, user_id):
+    """
+    View para excluir um usuário (apenas para administradores).
+    
+    Args:
+        request: Objeto HttpRequest
+        user_id: ID do usuário
+        
+    Returns:
+        Renderização do template de confirmação de exclusão
+    """
     if not request.user.is_staff:
         return redirect("login")
     user = get_object_or_404(User, id=user_id)
