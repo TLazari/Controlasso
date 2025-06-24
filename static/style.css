@@ -54,3 +54,42 @@ body.dark-mode .table thead {
 body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) > * {
     background-color: rgba(255, 255, 255, 0.05) !important;
 }
+
+/* Estilos do dashboard customizado */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.cards .card {
+    padding: 20px;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.cards .card h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+.cards .card p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.dashboard-table th,
+.dashboard-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+.dashboard-table th {
+    background-color: #f8f8f8;
+}
