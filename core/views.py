@@ -1,23 +1,42 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import FormView
-from django.urls import reverse_lazy
 from django import forms
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.forms.forms import NON_FIELD_ERRORS
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.views.decorators.http import require_POST
-from django.contrib.auth.models import User
+from django.views.generic import FormView
 
-from .models import Account, Transfer, Trade, Stock, FavoriteStock
 from .forms import (
-    TransferForm,
-    TradeForm,
-    BootstrapUserCreationForm,
     AdminSetUserPasswordForm,
+    BootstrapUserCreationForm,
     DirectPasswordResetForm,
+    TradeForm,
+    TransferForm,
 )
+from .models import Account, FavoriteStock, Stock, Trade, Transfer
+
+"""
+Módulo de views do aplicativo core.
+
+Contém as views responsáveis pela interface do usuário, incluindo:
+- Registro e autenticação de usuários
+- Dashboard com resumo de transferências e trades
+- Operações de transferência entre contas
+- Listagem e negociação de ações
+- Gestão de favoritos
+- Reset de senha e alteração de tema
+- Funcionalidades administrativas restritas a usuários staff
+
+As views combinam CBVs e funções baseadas em decoradores para controle
+de acesso e processamento de formulários.
+"""
+"""
+CBVs significa Class-Based Views, ou seja, Views baseadas em classes no Django. São um jeito de organizar o código de uma view usando classes em vez de funções. Por exemplo, a sua AdminPasswordResetView é uma CBV, pois é uma classe que herda de FormView e outras mixins.
+"""
 
 
 class AdminPasswordResetView(LoginRequiredMixin, UserPassesTestMixin, FormView):
@@ -103,8 +122,9 @@ def dashboard(request):
 
     start = request.GET.get("start")
     end = request.GET.get("end")
-    from django.utils import timezone
     from datetime import datetime, timedelta
+
+    from django.utils import timezone
 
     if start:
         try:
@@ -294,8 +314,8 @@ def operate_stock(request, stock_id):
     """
     stock = Stock.objects.get(id=stock_id)
 
-    from django.core.cache import cache
     import yfinance as yf
+    from django.core.cache import cache
 
     cache_key = f"stock_data_{stock.code}"
     stock_data = cache.get(cache_key)
@@ -426,8 +446,8 @@ def stock_info(request, stock_id):
     """
     stock = get_object_or_404(Stock, id=stock_id)
 
-    from django.core.cache import cache
     import yfinance as yf
+    from django.core.cache import cache
 
     cache_key = f"stock_chart_{stock.code}"
     data = cache.get(cache_key)
@@ -545,6 +565,7 @@ def password_reset_direct(request):
         Renderização do template de reset de senha
     """
     from django.contrib.auth.models import User
+
     from .forms import AdminUserUpdateForm
 
     if not request.user.is_staff:

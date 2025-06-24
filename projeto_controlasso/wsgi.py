@@ -1,15 +1,16 @@
-"""
-WSGI config for projeto_controlasso project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
-"""
 
 import os
 
 from django.core.wsgi import get_wsgi_application
+
+"""
+Configuração WSGI para o projeto projeto_controlasso.
+
+Este arquivo expõe o callable WSGI como uma variável de módulo chamada ``application``.
+
+Para mais informações sobre este arquivo, veja:
+https://docs.djangoproject.com/pt-br/5.2/howto/deployment/wsgi/
+"""
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'projeto_controlasso.settings')
 

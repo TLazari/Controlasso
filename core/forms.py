@@ -1,14 +1,24 @@
+
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import (
-    UserCreationForm,
     AuthenticationForm,
+    PasswordChangeForm,
     PasswordResetForm,
     SetPasswordForm,
-    PasswordChangeForm,
+    UserCreationForm,
 )
+from django.contrib.auth.models import User
 
-from .models import Transfer, Trade, Stock, Account
+from .models import Account, Stock, Trade, Transfer
+"""
+Definição dos formulários do projeto projeto_controlasso.
+
+Este módulo contém formulários para operações como transferências,
+negociações de ações, autenticação, gerenciamento de senhas e administração de usuários.
+
+Os formulários combinam validações específicas do domínio e
+estilos visuais com Bootstrap para facilitar a interação do usuário.
+"""
 
 
 class TransferForm(forms.ModelForm):
