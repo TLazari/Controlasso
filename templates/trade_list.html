@@ -8,17 +8,19 @@
     {% for s in favorites %}
     <div class="col-md-4 mb-3">
         <div class="card h-100 position-relative" data-stock-id="{{ s.id }}">
-            <form method="post" action="{% url 'toggle_favorite_stock_list' s.id %}" class="position-absolute top-0 end-0 m-2">
-                {% csrf_token %}
-                <button class="btn btn-sm btn-outline-warning">★</button>
-            </form>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title d-flex align-items-center">
                     <span>{{ s.code }} - {{ s.name }}</span>
                     <span id="badge-{{ s.id }}" class="badge ms-2 d-none"></span>
                 </h5>
                 <canvas id="chart-{{ s.id }}" height="150" class="mb-2 mx-auto d-block"></canvas>
-                <a href="{% url 'operate_stock' s.id %}" class="btn btn-primary btn-sm mt-auto">Operar</a>
+                <div class="d-flex align-items-center gap-2 mt-auto">
+                    <a href="{% url 'operate_stock' s.id %}" class="btn btn-primary btn-sm mt-auto">Operar</a>
+                    <form method="post" action="{% url 'toggle_favorite_stock_list' s.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-warning">★</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -30,17 +32,19 @@
     {% for s in stocks %}
     <div class="col-md-4 mb-3">
         <div class="card h-100 position-relative" data-stock-id="{{ s.id }}">
-            <form method="post" action="{% url 'toggle_favorite_stock_list' s.id %}" class="position-absolute top-0 end-0 m-2">
-                {% csrf_token %}
-                <button class="btn btn-sm btn-outline-warning">{% if s.id in favorite_ids %}★{% else %}☆{% endif %}</button>
-            </form>
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title d-flex align-items-center">
                     <span>{{ s.code }} - {{ s.name }}</span>
                     <span id="badge-{{ s.id }}" class="badge ms-2 d-none"></span>
                 </h5>
                 <canvas id="chart-{{ s.id }}" height="150" class="mb-2 mx-auto d-block"></canvas>
-                <a href="{% url 'operate_stock' s.id %}" class="btn btn-primary btn-sm mt-auto">Operar</a>
+                <div class="d-flex align-items-center gap-2 mt-auto">
+                    <a href="{% url 'operate_stock' s.id %}" class="btn btn-primary btn-sm mt-auto">Operar</a>
+                    <form method="post" action="{% url 'toggle_favorite_stock_list' s.id %}">
+                        {% csrf_token %}
+                        <button class="btn btn-sm btn-outline-warning">{% if s.id in favorite_ids %}★{% else %}☆{% endif %}</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
