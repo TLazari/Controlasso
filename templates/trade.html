@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 500px;">
+    <div class="card-body">
+        <h2 class="card-title mb-3">Operar Ações</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary mt-2" type="submit">Confirmar</button>
+        </form>
+        <p class="text-muted mt-2">
+            Saldo disponível:
+            <span id="balanceValue" data-balance="R$ {{ balance|floatformat:2 }}">R$ {{ balance|floatformat:2 }}</span>
+            <button id="balanceToggle" type="button" class="btn btn-sm btn-outline-secondary ms-2">Ocultar</button>
+        </p>
+    </div>
+</div>
+<h3 class="mt-5">Ações Disponíveis</h3>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in stocks %}
+        <tr>
+            <td>{{ s.code }}</td>
+            <td>{{ s.name }}</td>
+            <td><a href="{% url 'operate_stock' s.id %}" class="btn btn-outline-primary btn-sm">Operar</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">Nenhuma ação cadastrada.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const balSpan = document.getElementById('balanceValue');
+const balBtn = document.getElementById('balanceToggle');
+balBtn.addEventListener('click', () => {
+    if (balSpan.textContent === '••••••') {
+        balSpan.textContent = balSpan.dataset.balance;
+        balBtn.textContent = 'Ocultar';
+    } else {
+        balSpan.textContent = '••••••';
+        balBtn.textContent = 'Mostrar';
+    }
+});
+</script>
+{% endblock %}

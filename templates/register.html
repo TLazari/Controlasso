@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 400px;">
+    <div class="card-body">
+        <h2 class="card-title mb-3">Registro</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% for error in form.username.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+                <div class="progress mt-1">
+                    <div id="password-strength-bar" class="progress-bar" role="progressbar" style="width:0%"></div>
+                </div>
+                {% for error in form.password1.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+                {% for error in form.password2.errors %}<div class="text-danger">{{ error }}</div>{% endfor %}
+            </div>
+            <button class="btn btn-primary mt-2" type="submit">Registrar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const pwdInput = document.getElementById('id_password1');
+    const bar = document.getElementById('password-strength-bar');
+    function updateStrength() {
+        const val = pwdInput.value;
+        let strength = 0;
+        if (val.length >= 8) strength++;
+        if (/[A-Z]/.test(val)) strength++;
+        if (/[a-z]/.test(val)) strength++;
+        if (/[0-9]/.test(val)) strength++;
+        if (/[^A-Za-z0-9]/.test(val)) strength++;
+        const percent = (strength / 5) * 100;
+        bar.style.width = percent + '%';
+        bar.classList.remove('bg-danger', 'bg-warning', 'bg-success');
+        if (percent < 40) {
+            bar.classList.add('bg-danger');
+        } else if (percent < 80) {
+            bar.classList.add('bg-warning');
+        } else {
+            bar.classList.add('bg-success');
+        }
+    }
+    pwdInput.addEventListener('input', updateStrength);
+</script>
+{% endblock %}

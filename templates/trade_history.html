@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load filters %}
+{% block content %}
+<h2 class="mb-4">Movimentações de Ações</h2>
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Ação</th>
+            <th>Tipo</th>
+            <th>Quantidade</th>
+            <th>Valor unitário</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for tr in trades %}
+        <tr>
+            <td>{{ tr.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ tr.stock.code }}</td>
+            <td>{{ tr.get_trade_type_display }}</td>
+            <td>{{ tr.quantity }}</td>
+            <td>{{ tr.price }}</td>
+            <td>{{ tr.quantity|multiply:tr.price }}</td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">Nenhuma operação.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'dashboard' %}" class="btn btn-secondary">Voltar</a>
+{% endblock %}

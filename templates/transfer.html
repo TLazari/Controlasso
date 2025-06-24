@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card mx-auto" style="max-width: 500px;">
+    <div class="card-body">
+        <h2 class="card-title mb-3">Transferir</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.account.label_tag }}
+                {{ form.account }}
+            </div>
+            <div class="mb-3">
+                {{ form.recipient.label_tag }}
+                {{ form.recipient }}
+            </div>
+            <div class="mb-3">
+                {{ form.amount.label_tag }}
+                {{ form.amount }}
+            </div>
+            <button class="btn btn-primary" type="submit">Enviar</button>
+        </form>
+        {% if alert_message %}
+        <script>
+            alert("{{ alert_message }}");
+        </script>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const accountInput = document.getElementById('{{ form.account.id_for_label }}');
+const userInput = document.getElementById('{{ form.recipient.id_for_label }}');
+accountInput.addEventListener('change', () => {
+    const acc = accountInput.value.trim();
+    if (!acc) {
+        userInput.value = '';
+        return;
+    }
+    fetch(`/account-info/?account=${encodeURIComponent(acc)}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+            if (data && data.user) {
+                userInput.value = data.user;
+            } else {
+                userInput.value = '';
+            }
+        })
+        .catch(() => { userInput.value = ''; });
+});
+</script>
+{% endblock %}

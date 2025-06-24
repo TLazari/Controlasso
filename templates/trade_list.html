@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Escolha uma Ação</h2>
+
+{% if favorites %}
+<h4 class="mb-3">Favoritas</h4>
+<div class="row mb-4">
+    {% for s in favorites %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 position-relative" data-stock-id="{{ s.id }}">
+            <form method="post" action="{% url 'toggle_favorite_stock_list' s.id %}" class="position-absolute top-0 end-0 m-2">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-warning">★</button>
+            </form>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title d-flex align-items-center">
+                    <span>{{ s.code }} - {{ s.name }}</span>
+                    <span id="badge-{{ s.id }}" class="badge ms-2 d-none"></span>
+                </h5>
+                <canvas id="chart-{{ s.id }}" height="150" class="mb-2 mx-auto d-block"></canvas>
+                <a href="{% url 'operate_stock' s.id %}" class="btn btn-primary btn-sm mt-auto">Operar</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="row">
+    {% for s in stocks %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 position-relative" data-stock-id="{{ s.id }}">
+            <form method="post" action="{% url 'toggle_favorite_stock_list' s.id %}" class="position-absolute top-0 end-0 m-2">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-warning">{% if s.id in favorite_ids %}★{% else %}☆{% endif %}</button>
+            </form>
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title d-flex align-items-center">
+                    <span>{{ s.code }} - {{ s.name }}</span>
+                    <span id="badge-{{ s.id }}" class="badge ms-2 d-none"></span>
+                </h5>
+                <canvas id="chart-{{ s.id }}" height="150" class="mb-2 mx-auto d-block"></canvas>
+                <a href="{% url 'operate_stock' s.id %}" class="btn btn-primary btn-sm mt-auto">Operar</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function formatLabel(dt) {
+    const d = new Date(dt);
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+}
+document.querySelectorAll('[data-stock-id]').forEach(card => {
+    const id = card.dataset.stockId;
+    fetch(`/api/stock-info/${id}/`)
+        .then(r => r.json())
+        .then(data => {
+            const badge = document.getElementById('badge-' + id);
+            badge.classList.remove('d-none');
+            if (data.change >= 0) {
+                badge.classList.add('bg-success');
+            } else {
+                badge.classList.add('bg-danger');
+            }
+            badge.textContent = parseFloat(data.change).toFixed(3) + '%';
+
+            const hist = data.hist.slice(-4);
+            const labels = hist.map(d => formatLabel(d[0]));
+            const values = hist.map(d => d[1]);
+            const ctx = document.getElementById('chart-' + id).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{ data: values, borderColor: 'rgb(13,110,253)', tension: 0.3 }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: false } },
+                    plugins: {
+                        legend: { display: false },
+                        zoom: {
+                            zoom: { wheel: { enabled: false }, pinch: { enabled: false }, mode: 'x' },
+                            pan: { enabled: false }
+                        }
+                    }
+                }
+            });
+        });
+});
+</script>
+{% endblock %}
