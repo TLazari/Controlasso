@@ -68,44 +68,44 @@ main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 10px;
   margin-bottom: 30px;
 }
 
-.finance-button {
+.finance-buttons {
   background-color: #27ae60;
-  color: white;
+  color:black;
   border: none;
-  padding: 13px 25px;
+  padding: 4px 25px;
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.finance-button:hover {
+.finance-buttons:hover {
   background-color: #219150;
 }
 
-.finance-button.red {
-  background-color: #e74c3c;
+.finance-buttons.red {
+  background-color:red ;
 }
-.finance-button.red:hover {
-  background-color: #c0392b;
-}
-
-.finance-button.blue {
-  background-color: #09ad4e;
-}
-.finance-button.blue:hover {
-  background-color: #be1313;
+.finance-buttons.red:hover {
+  background-color:rgb(182, 17, 17);
 }
 
-.finance-button.gray {
-  background-color: #450ba1;
+.finance-buttons.blue {
+  background-color:blue ;
 }
-.finance-button.gray:hover {
-  background-color: #d4e20a;
+.finance-buttons.blue:hover {
+  background-color: rgb(16, 16, 122);
+}
+
+.finance-buttons.gray {
+  background-color: gray;
+}
+.finance-buttons.gray:hover {
+  background-color: rgb(100, 98, 98);
 }
 
 /* Content display */
