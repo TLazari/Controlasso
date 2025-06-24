@@ -1,6 +1,16 @@
+
 from django.contrib.auth.models import User
 from django.db import models
 
+"""
+Modelos do aplicativo core para o projeto projeto_controlasso.
+
+Contém as definições das entidades principais relacionadas a contas bancárias,
+transferências, ações, operações de trade e ações favoritas.
+
+Cada modelo inclui atributos de dados e métodos para operações específicas,
+como validação e execução de transações financeiras.
+"""
 
 class Account(models.Model):
     """

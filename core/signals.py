@@ -1,9 +1,18 @@
+import random
+
 from django.contrib.auth.models import Group, User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+"""
+Sinais do aplicativo core para o projeto projeto_controlasso.
+
+Define funções auxiliares para gerar números de conta e saldo inicial,
+além de conectar o sinal post_save do modelo User para criar automaticamente
+uma conta associada e adicionar o usuário a um grupo padrão.
+"""
+
 from .models import Account
-import random
 
 
 def generate_account_number():
