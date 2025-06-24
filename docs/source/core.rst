@@ -64,11 +64,3 @@ core.views module
    :members:
    :show-inheritance:
    :undoc-members:
-
-Module contents
----------------
-
-.. automodule:: core
-   :members:
-   :show-inheritance:
-   :undoc-members:

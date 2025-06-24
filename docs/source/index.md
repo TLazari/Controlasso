@@ -4,10 +4,22 @@ contain the root `toctree` directive.
 
 # Controlasso - Sistema de Gerenciamento Financeiro
 
+```{toctree}
+:maxdepth: 2
+:caption: Contents
+
+modules
+
+```
+
+# Documentação de Software
+
+Este documento descreve a visão inicial do projeto **Controlasso**.
+
 ## 1. Integrantes e Título
 
 - **Título do Projeto:** Controlasso
-- **Integrantes:** [Nomes da equipe]
+- **Integrantes:** Preencher com os nomes da equipe.
 
 ## 2. Introdução
 
@@ -64,147 +76,36 @@ O projeto utiliza a metodologia ágil Scrum para gestão de sprints. A escolha v
 2. Transferências somente são efetivadas com saldo suficiente.
 3. Movimentações de compra e venda alteram o saldo da conta.
 
-## 5. Diagramas de Arquitetura
+### 4.3 Diagramas UML
 
-5.1 Diagrama de Entidades e Relacionamentos
--------------------------------------------
+- Diagrama de Caso de Uso
+- Diagrama de Classes
+- Diagrama de Atividades / Fluxograma
 
-.. mermaid::
+*(Os diagramas devem ser elaborados em ferramenta apropriada e adicionados ao repositório quando disponíveis.)*
 
-   erDiagram
-       LogEntry ||--o{ ContentType : "content_type"
-       LogEntry ||--o{ User : "user"
-       Account ||--|| User : "user"
-       Transfer ||--o{ User : "sender"
-       Transfer ||--o{ User : "recipient"
-       Trade ||--o{ User : "user"
-       Trade ||--o{ Stock : "stock"
-       FavoriteStock ||--o{ User : "user"
-       FavoriteStock ||--o{ Stock : "stock"
-       Session ||--|| AbstractBaseSession : "herda"
-       User ||--|| AbstractUser : "herda"
-       AbstractUser ||--|| AbstractBaseUser : "herda"
-       AbstractUser ||--|| PermissionsMixin : "inclui"
-       Permission ||--o{ ContentType : "content_type"
+### 4.4 Cronograma de Desenvolvimento
 
-       LogEntry {
-           AutoField id
-           ForeignKey content_type
-           ForeignKey user
-           PositiveSmallIntegerField action_flag
-           DateTimeField action_time
-           TextField change_message
-           TextField object_id
-           CharField object_repr
-       }
+Planejar sprints semanais contemplando as principais funcionalidades.
 
-       Account {
-           BigAutoField id
-           OneToOneField user
-           CharField account_number
-           DecimalField balance
-           CharField theme
-       }
+## 5. Resultado Esperado
 
-       Transfer {
-           BigAutoField id
-           ForeignKey recipient
-           ForeignKey sender
-           DecimalField amount
-           DateTimeField created_at
-       }
+Ao término do projeto, espera-se que o sistema ofereça todas as funcionalidades descritas nos requisitos, com autenticação robusta e dashboards informativos.
 
-       Trade {
-           BigAutoField id
-           ForeignKey stock
-           ForeignKey user
-           DateTimeField created_at
-           DecimalField price
-           PositiveIntegerField quantity
-           CharField trade_type
-       }
+### 5.1 Papel no Scrum
 
-       FavoriteStock {
-           BigAutoField id
-           ForeignKey stock
-           ForeignKey user
-       }
+- **Product Owner (PO)**: responsável por priorizar funcionalidades.
+- **Scrum Master (SM)**: responsável por facilitar o processo Scrum.
 
-       Session {
-           CharField session_key
-           DateTimeField expire_date
-           TextField session_data
-       }
+### 5.2 Análise de Riscos
 
-       AbstractBaseSession {
-           DateTimeField expire_date
-           TextField session_data
-       }
+Identificar riscos técnicos (falhas na integração), humanos (falta de recursos), de cronograma e financeiros. Definir planos de mitigação.
 
-       User {
-           AutoField id
-           DateTimeField date_joined
-           EmailField email
-           CharField first_name
-           BooleanField is_active
-           BooleanField is_staff
-           BooleanField is_superuser
-           DateTimeField last_login
-           CharField last_name
-           CharField password
-           CharField username
-       }
+### 5.3 Funcionalidade do Projeto
 
-       Stock {
-           BigAutoField id
-           CharField code
-           DecimalField current_price
-           CharField name
-       }
+Sistema web para movimentação de contas e negociação de ações de forma simplificada.
 
-       Group {
-           AutoField id
-           CharField name
-       }
+## 6. Conclusão
 
-       Permission {
-           AutoField id
-           ForeignKey content_type
-           CharField codename
-           CharField name
-       }
-
-       ContentType {
-           AutoField id
-           CharField app_label
-           CharField model
-       }
-
-       AbstractUser {
-           DateTimeField date_joined
-           EmailField email
-           CharField first_name
-           BooleanField is_active
-           BooleanField is_staff
-           BooleanField is_superuser
-           DateTimeField last_login
-           CharField last_name
-           CharField password
-           CharField username
-       }
-
-       PermissionsMixin {
-           abstract inheritance
-       }
-
-       AbstractBaseUser {
-           abstract inheritance
-       }
-
-```{toctree}
-:maxdepth: 2
-:caption: Contents
-
-modules
-
+Esta documentação apresenta um panorama inicial do projeto Controlasso. O progresso das tarefas deve ser acompanhado via sprints, garantindo que cada ponto desta lista seja revisado e concluído.
 
