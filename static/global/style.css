@@ -1,0 +1,95 @@
+body {
+    background-color: #ffffff;
+    color: #212529;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+body.dark-mode {
+    background-color: #212529;
+    color: #f8f9fa;
+}
+
+body.dark-mode .card {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.balance-card h2 {
+    font-size: 2.5rem;
+}
+
+body.dark-mode a {
+    color: #f8f9fa;
+}
+
+body.dark-mode .list-group-item {
+    background-color: #343a40;
+    color: #f8f9fa;
+    border-color: #454d55;
+}
+
+body.dark-mode .table {
+    background-color: #343a40 !important;
+    color: #f8f9fa;
+    border-color: #454d55;
+}
+body.dark-mode .table td,
+body.dark-mode .table th {
+    color: #f8f9fa;
+}
+
+body.dark-mode .table thead {
+    background-color: #454d55 !important;
+    color: #f8f9fa;
+}
+
+body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Estilos do dashboard customizado */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.cards .card {
+    padding: 20px;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.cards .card h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+.cards .card p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.dashboard-table th,
+.dashboard-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+.dashboard-table th {
+    background-color: #f8f8f8;
+}
