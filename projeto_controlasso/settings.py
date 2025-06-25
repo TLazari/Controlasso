@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!eqj0h2(-tmk8cr_(t$1tgv!xl^w=tsz5&2pl!cm8y)=u8(69t'
 
 # Modo de depuração — deve estar em False em produção.
-DEBUG = True
+DEBUG = False
 
 # Lista de hosts permitidos a acessar o sistema.
 ALLOWED_HOSTS = ['*']
@@ -47,12 +47,15 @@ INSTALLED_APPS = [
     'core',
 ]
 
+ROOT_URLCONF = "projeto_controlasso.urls"
+
 # ===========================
 # 🧱 Middleware
 # ===========================
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -137,8 +140,12 @@ STATIC_URL = 'static/'
 # Diretório onde os arquivos estáticos serão coletados (ex: para deploy)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+
 # Diretórios adicionais de arquivos estáticos durante o desenvolvimento
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Configuração para o Whitenoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ===========================
 # 🔑 Configuração de campo padrão para chaves primárias
