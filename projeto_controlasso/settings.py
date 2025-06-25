@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-!eqj0h2(-tmk8cr_(t$1tgv!xl^w=tsz5&2pl!cm8y)=u8(69t
 DEBUG = True
 
 # Lista de hosts permitidos a acessar o sistema.
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
 
 # ===========================
 # 🧩 Aplicativos Instalados

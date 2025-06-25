@@ -2,14 +2,14 @@
 {% load filters %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-<div class="d-flex align-items-center">
-    <h2 class="me-2 mb-0">{{ stock.code }} - {{ stock.name }}</h2>
-    {% if data.change_percent >= 0 %}
-    <span class="badge bg-success">{{ data.change_percent }}%</span>
-    {% else %}
-    <span class="badge bg-danger">{{ data.change_percent }}%</span>
-    {% endif %}
-</div>
+    <div class="d-flex align-items-center">
+        <h2 class="me-2 mb-0">{{ stock.code }} - {{ stock.name }}</h2>
+        {% if data.change_percent >= 0 %}
+        <span class="badge bg-success">{{ data.change_percent }}%</span>
+        {% else %}
+        <span class="badge bg-danger">{{ data.change_percent }}%</span>
+        {% endif %}
+    </div>
     <div>
         <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-sm me-2">Voltar</a>
         <form method="post" action="{% url 'toggle_favorite_stock' stock.id %}" class="d-inline">
@@ -71,16 +71,17 @@
                     <p class="text-muted">
                         Saldo disponível:
                         <span id="balanceValue" data-balance="{{ balance|brl }}">{{ balance|brl }}</span>
-                        <button id="balanceToggle" type="button" class="btn btn-sm btn-outline-secondary ms-2">Ocultar</button>
+                        <button id="balanceToggle" type="button"
+                            class="btn btn-sm btn-outline-secondary ms-2">Ocultar</button>
                     </p>
                     {% if form.non_field_errors %}
-                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
                     {% endif %}
                     <button class="btn btn-primary mt-2" type="submit">Confirmar Operação</button>
                     {% if messages %}
-                        {% for msg in messages %}
-                        <div id="operationMessage" class="alert alert-{{ msg.tags }} mt-2">{{ msg }}</div>
-                        {% endfor %}
+                    {% for msg in messages %}
+                    <div id="operationMessage" class="alert alert-{{ msg.tags }} mt-2">{{ msg }}</div>
+                    {% endfor %}
                     {% endif %}
                 </form>
             </div>
@@ -109,130 +110,82 @@
             <td>{{ h.total }}</td>
         </tr>
         {% empty %}
-        <tr><td colspan="5">Nenhuma operação.</td></tr>
+        <tr>
+            <td colspan="5">Nenhuma operação.</td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
-<div class="text-center">
-    <canvas id="tradeSummaryChart" height="160" class="mb-2 mx-auto d-block"></canvas>
-    <div class="mb-3">
-        <button id="zoomInSummary" type="button" class="btn btn-sm btn-outline-primary me-1">+</button>
-        <button id="zoomOutSummary" type="button" class="btn btn-sm btn-outline-primary">-</button>
-    </div>
-</div>
-{{ history|json_script:"trade-history" }}
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-const priceInput = document.getElementById('{{ form.price.id_for_label }}');
-const qtyInput = document.getElementById('{{ form.quantity.id_for_label }}');
-const totalInput = document.getElementById('total');
-function updateTotal() {
-    const p = parseFloat(priceInput.value) || 0;
-    const q = parseInt(qtyInput.value) || 0;
-    totalInput.value = (p * q).toFixed(2);
-}
-priceInput.addEventListener('input', updateTotal);
-qtyInput.addEventListener('input', updateTotal);
-updateTotal();
+    const priceInput = document.getElementById('{{ form.price.id_for_label }}');
+    const qtyInput = document.getElementById('{{ form.quantity.id_for_label }}');
+    const totalInput = document.getElementById('total');
+    function updateTotal() {
+        const p = parseFloat(priceInput.value) || 0;
+        const q = parseInt(qtyInput.value) || 0;
+        totalInput.value = (p * q).toFixed(2);
+    }
+    priceInput.addEventListener('input', updateTotal);
+    qtyInput.addEventListener('input', updateTotal);
+    updateTotal();
 </script>
 {{ data.history|json_script:"hist-data" }}
 <script>
-const hd = JSON.parse(document.getElementById('hist-data').textContent);
-function formatLabel(dt) {
-    const d = new Date(dt);
-    const h = String(d.getHours()).padStart(2, '0');
-    const m = String(d.getMinutes()).padStart(2, '0');
-    return `${h}:${m}`;
-}
-const labels = hd.map(d => formatLabel(d[0]));
-const values = hd.map(d => d[1]);
-const histCanvas = document.getElementById('historyChart');
-const histLast = document.getElementById('historyLast');
-const histChart = new Chart(histCanvas.getContext('2d'), {
-    type: 'line',
-    data: { labels: labels, datasets: [{ data: values, borderColor: 'rgb(13,110,253)', tension: 0.3 }] },
-    options: {
-        responsive: true,
-        scales: { y: { beginAtZero: false } },
-        plugins: {
-            legend: { display: false },
-            zoom: {
-                zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
-                pan: { enabled: true, mode: 'x' }
+    const hd = JSON.parse(document.getElementById('hist-data').textContent);
+    function formatLabel(dt) {
+        const d = new Date(dt);
+        const h = String(d.getHours()).padStart(2, '0');
+        const m = String(d.getMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+    }
+    const labels = hd.map(d => formatLabel(d[0]));
+    const values = hd.map(d => d[1]);
+    const histCanvas = document.getElementById('historyChart');
+    const histLast = document.getElementById('historyLast');
+    const histChart = new Chart(histCanvas.getContext('2d'), {
+        type: 'line',
+        data: { labels: labels, datasets: [{ data: values, borderColor: 'rgb(13,110,253)', tension: 0.3 }] },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: false } },
+            plugins: {
+                legend: { display: false },
+                zoom: {
+                    zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
+                    pan: { enabled: true, mode: 'x' }
+                }
             }
         }
-    }
-});
-histCanvas.addEventListener('mousemove', evt => {
-    const pts = histChart.getElementsAtEventForMode(evt, 'nearest', {intersect: false}, false);
-    if (pts.length) {
-        histLast.textContent = parseFloat(values[pts[0].index]).toFixed(2);
-    }
-});
-histCanvas.addEventListener('mouseleave', () => {
-    histLast.textContent = values[values.length - 1];
-});
-const balSpan = document.getElementById('balanceValue');
-const balBtn = document.getElementById('balanceToggle');
-balBtn.addEventListener('click', () => {
-    if (balSpan.textContent === '••••••') {
-        balSpan.textContent = balSpan.dataset.balance;
-        balBtn.textContent = 'Ocultar';
-    } else {
-        balSpan.textContent = '••••••';
-        balBtn.textContent = 'Mostrar';
-    }
-});
-const tradeHist = JSON.parse(document.getElementById('trade-history').textContent);
-const tradeLabels = tradeHist.map(h => formatLabel(h.date));
-const tradeQty = tradeHist.map(h => h.quantity);
-const tradeTotals = tradeHist.map(h => h.total);
-const summaryChart = new Chart(document.getElementById('tradeSummaryChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: tradeLabels,
-        datasets: [
-            {
-                label: 'Quantidade',
-                data: tradeQty,
-                backgroundColor: 'rgba(13,110,253,0.5)',
-                borderColor: 'rgb(13,110,253)',
-                borderWidth: 1
-            },
-            {
-                label: 'Valor Pago',
-                data: tradeTotals,
-                backgroundColor: 'rgba(25,135,84,0.5)',
-                borderColor: 'rgb(25,135,84)',
-                borderWidth: 1
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        scales: { y: { beginAtZero: true } },
-        plugins: {
-            legend: { display: false },
-            zoom: {
-                zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' },
-                pan: { enabled: true, mode: 'x' }
-            }
+    });
+    histCanvas.addEventListener('mousemove', evt => {
+        const pts = histChart.getElementsAtEventForMode(evt, 'nearest', { intersect: false }, false);
+        if (pts.length) {
+            histLast.textContent = parseFloat(values[pts[0].index]).toFixed(2);
         }
+    });
+    histCanvas.addEventListener('mouseleave', () => {
+        histLast.textContent = values[values.length - 1];
+    });
+    const balSpan = document.getElementById('balanceValue');
+    const balBtn = document.getElementById('balanceToggle');
+    balBtn.addEventListener('click', () => {
+        if (balSpan.textContent === '••••••') {
+            balSpan.textContent = balSpan.dataset.balance;
+            balBtn.textContent = 'Ocultar';
+        } else {
+            balSpan.textContent = '••••••';
+            balBtn.textContent = 'Mostrar';
+        }
+    });
+    const opMsg = document.getElementById('operationMessage');
+    if (opMsg) {
+        setTimeout(() => opMsg.remove(), 5000);
     }
-});
-document.getElementById('zoomInHist').addEventListener('click', () => histChart.zoom(1.2));
-document.getElementById('zoomOutHist').addEventListener('click', () => histChart.zoom(0.8));
-document.getElementById('zoomInSummary').addEventListener('click', () => summaryChart.zoom(1.2));
-document.getElementById('zoomOutSummary').addEventListener('click', () => summaryChart.zoom(0.8));
-const opMsg = document.getElementById('operationMessage');
-if (opMsg) {
-    setTimeout(() => opMsg.remove(), 5000);
-}
-{% if alert_message %}
-alert("{{ alert_message }}");
-{% endif %}
+    {% if alert_message %}
+    alert("{{ alert_message }}");
+    {% endif %}
 </script>
 {% endblock %}

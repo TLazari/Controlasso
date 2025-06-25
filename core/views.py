@@ -155,8 +155,44 @@ def dashboard(request):
         .order_by("-created_at")[:5]
     )
     favorites = FavoriteStock.objects.filter(user=request.user)
-    from collections import defaultdict
 
+    # resumo da carteira para exibicao em cards e tabela
+    trade_all = Trade.objects.filter(user=request.user).select_related("stock")
+    from collections import defaultdict
+    portfolio_map = defaultdict(lambda: {"qty": 0, "inv": 0, "stock": None})
+    for tr in trade_all:
+        data = portfolio_map[tr.stock.code]
+        data["stock"] = tr.stock
+        if tr.trade_type == Trade.BUY:
+            data["qty"] += tr.quantity
+            data["inv"] += float(tr.quantity * tr.price)
+        else:
+            data["qty"] -= tr.quantity
+            data["inv"] -= float(tr.quantity * tr.price)
+
+    portfolio = []
+    total_invested = 0.0
+    total_profit = 0.0
+    for code, data in portfolio_map.items():
+        qty = data["qty"]
+        if qty <= 0:
+            continue
+        avg_price = data["inv"] / qty if qty else 0
+        curr_price = float(data["stock"].current_price)
+        valor = ((curr_price - avg_price) / avg_price * 100) if avg_price else 0
+        profit = (curr_price - avg_price) * qty
+        portfolio.append(
+            {
+                "code": code,
+                "quantity": qty,
+                "avg_price": avg_price,
+                "current_price": curr_price,
+                "valorization": valor,
+                "profit": profit,
+            }
+        )
+        total_invested += qty * avg_price
+        total_profit += profit
     in_summary = defaultdict(float)
     for t in transfers_in:
         hour = t.created_at.replace(minute=0, second=0, microsecond=0)
@@ -207,6 +243,10 @@ def dashboard(request):
             "trades_data": trades_data,
             "start": start,
             "end": end,
+            "portfolio": portfolio,
+            "total_invested": total_invested,
+            "total_profit": total_profit,
+            "pending_orders": 0,
         },
     )
 
