@@ -61,6 +61,7 @@ class TransferForm(forms.ModelForm):
         self.current_user = current_user
         super().__init__(*args, **kwargs)
         self.fields["recipient"].initial = ""
+        self.fields["amount"].label = "Valor"
 
     def clean_account(self):
         """
@@ -293,6 +294,9 @@ class BootstrapUserCreationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         for field in self.visible_fields():
             field.field.widget.attrs["class"] = "form-control"
+            self.fields["username"].label = "Usuário"
+            self.fields["password1"].label = "Senha"
+            self.fields["password2"].label = "Confirmação de Senha"
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -313,7 +317,8 @@ class BootstrapAuthenticationForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         for field in self.visible_fields():
             field.field.widget.attrs["class"] = "form-control"
-
+            self.fields["username"].label = "Usuário"
+            self.fields["password"].label = "Senha"
 
 class BootstrapPasswordResetForm(PasswordResetForm):
     """
@@ -341,6 +346,8 @@ class BootstrapSetPasswordForm(SetPasswordForm):
         super().__init__(*args, **kwargs)
         for field in self.visible_fields():
             field.field.widget.attrs["class"] = "form-control"
+        self.fields["new_password1"].label = "Nova senha"
+        self.fields["new_password2"].label = "Confirmação da nova senha"
 
 
 class BootstrapPasswordChangeForm(PasswordChangeForm):
@@ -355,6 +362,9 @@ class BootstrapPasswordChangeForm(PasswordChangeForm):
         super().__init__(*args, **kwargs)
         for field in self.visible_fields():
             field.field.widget.attrs["class"] = "form-control"
+        self.fields["old_password"].label = "Senha atual"
+        self.fields["new_password1"].label = "Nova senha"
+        self.fields["new_password2"].label = "Confirmação da nova senha"
 
 
 class AdminSetUserPasswordForm(forms.Form):
