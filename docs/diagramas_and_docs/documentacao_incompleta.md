@@ -5,8 +5,8 @@ Este documento descreve a visão inicial do projeto **Controlasso**.
 ## 1. Integrantes e Título
 
 - **Título do Projeto:** Controlasso
-- **Integrantes:** Preencher com os nomes da equipe.
-
+- **Integrantes:** André Samouilian, Matheus Maia, Ruan Lucas, Rayza Anchayhua, Thiago Lazari
+, 
 ## 2. Introdução
 
 Sistema de gerenciamento de contas e negociação de ações, com dashboards de movimentações e carteira.
