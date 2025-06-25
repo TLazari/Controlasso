@@ -68,7 +68,6 @@ O projeto utiliza a metodologia ágil Scrum para gestão de sprints. A escolha v
 - Diagrama de Classes
 - Diagrama de Atividades / Fluxograma
 
-*(Os diagramas devem ser elaborados em ferramenta apropriada e adicionados ao repositório quando disponíveis.)*
 
 ### 4.4 Cronograma de Desenvolvimento
 
@@ -85,7 +84,74 @@ Ao término do projeto, espera-se que o sistema ofereça todas as funcionalidade
 
 ### 5.2 Análise de Riscos
 
-Identificar riscos técnicos (falhas na integração), humanos (falta de recursos), de cronograma e financeiros. Definir planos de mitigação.
+Risco 1: Falta de domínio em Django 
+Causa: Pouca experiência da equipe com o framework. 
+Consequência: Atrasos e retrabalho por decisões técnicas equivocadas. 
+
+Risco 2: Integração fraca de front-end e back-end 
+Causa: Comunicação deficiente entre as camadas do sistema. 
+Consequência: Falta de informação nas páginas, dificuldade na navegação. 
+
+Risco 3: Pouco tempo para testes 
+Causa: Priorização do desenvolvimento e falta de testes para lançamento em produção. 
+Consequência: Bugs em produção e baixa confiabilidade do sistema. 
+
+Risco 4: Conflitos no versionamento de código 
+Causa: Falta de disciplina no uso do Git. 
+Consequência: Perda de código e falhas na integração. 
+
+Risco 5: Interface pouco amigável 
+Causa: Falta de foco em design e UX. 
+Consequência: Má experiência do usuário e rejeição da ferramenta. 
+
+Risco 6: Falhas de segurança na autenticação 
+Causa: Implementação frágil ou mal validada. 
+Consequência: Acesso indevido e comprometimento de dados. 
+
+Risco 7: Falta de documentação técnica 
+Causa: Priorização exclusiva no desenvolvimento funcional. 
+Consequência: Dificuldade de manutenção e expansão futura. 
+
+Risco 8: Sobreposição de tarefas entre membros 
+Causa: Falta de definição de papéis claros. 
+Consequência: Perda de tempo e retrabalho. 
+
+Risco 9: Complexidade excessiva em funcionalidades simples 
+Causa: Superengenharia. 
+Consequência: Tempo desperdiçado e sistema difícil de manter.
+
+Risco 10: Problemas com deploy (Railway, Render etc.) 
+Causa: Configurações erradas ou instabilidade da plataforma. 
+Consequência: Sistema fora do ar ou com falhas. 
+
+Risco 11: APIs externas (ex: dados de ações) fora do ar 
+Causa: Dependência de serviços de terceiros. 
+Consequência: Funcionalidade quebrada ou desatualizada. 
+
+Risco 12: Falta de validação dos dados de entrada 
+Causa: Falhas nos formulários e na sanitização. 
+Consequência: Erros de lógica, vulnerabilidades e falhas críticas. 
+
+## Classificação e Análise Qualitativa 
+
+| **Risco**                                               | **Probabilidade** | **Impacto** | **Prioridade** |
+|---------------------------------------------------------|-------------------|-------------|----------------|
+| Integração fraca de front-end e back-end                | Alta              | Média       | Alta           |
+| APIs externas (ex: dados de ações) fora do ar           | Alta              | Alta        | Alta           |
+| Complexidade excessiva em funcionalidades simples       | Baixa             | Média       | Baixa          |
+| Problemas com deploy (Railway, Render etc.)             | Média             | Alta        | Alta           |
+| Falta de documentação técnica                           | Alta              | Média       | Alta           |
+
+## Plano de Resposta aos Riscos
+
+| **Risco**                                | **Estratégia** | **Ação prática**                                                                                                  |
+|------------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------|
+| Integração fraca de front-end e back-end | Reduzir        | Definir escopo claro de interface, criar diagrama de classes, realizar reuniões semanais com entregas definidas. |
+| APIs externas fora do ar                 | Aceitar        | Implementar fallback de cache local e utilizar múltiplas fontes de dados.                                        |
+| Problemas com deploy (Railway, Render)   | Reduzir        | Usar hospedagem local como alternativa e avaliar ferramentas e planos de deploy.                                 |
+| Falta de documentação técnica            | Evitar         | Estabelecer rotina de documentação ao final de cada sprint.                                                      |
+| Pouco tempo para testes                  | Reduzir        | Planejar tempo exclusivo para testes em cada sprint com responsável designado.                                   |
+
 
 ### 5.3 Funcionalidade do Projeto
 
