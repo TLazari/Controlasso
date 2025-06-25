@@ -70,22 +70,3 @@ Exemplo:
 
 Repita esse nível de detalhe para casos críticos.
 
----
-
-### 6. Ferramentas sugeridas
-
-* **draw\.io** ou **diagrams.net**
-* **Lucidchart**
-* **Astah Community**
-* **Visual Paradigm**
-
----
-
-### 7. Entrega
-
-✅ Inclua o diagrama exportado (PNG ou PDF) em `docs/casos_de_uso/`.
-✅ Documente os fluxos (pré-condições, exceções e pós-condições) de pelo menos os casos principais.
-
----
-
-Se quiser, posso criar um diagrama visual com base nessas instruções ou gerar os fluxos detalhados com descrição para cada caso de uso. Só falar! 🚀
