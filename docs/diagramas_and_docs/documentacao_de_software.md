@@ -55,7 +55,13 @@ O projeto utiliza a metodologia ágil Scrum para gestão de sprints. A escolha v
 1. Utilizar Django como framework principal.
 2. Proteger todas as rotas que exigem autenticação.
 3. Persistir dados em banco relacional (ex.: PostgreSQL).
-
+4. Sphinx para documentação automática
+5. Pytest para testes automatizados 
+6. Django framework web completo
+7. Yfinance algo assim que é a API
+8. Git para versionameto 
+9. Vs code como ide
+    
 #### Regras de Negócio (RN)
 
 1. Cada usuário possui uma conta única.
