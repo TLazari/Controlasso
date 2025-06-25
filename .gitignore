@@ -127,4 +127,3 @@ gunicorn-error-log
 db copy.sqlite3
 
 #temporario, dps ignorar
-!db.sqlite3
