@@ -8,3 +8,4 @@ projeto_controlasso
    core
    routes
    api
+   testes

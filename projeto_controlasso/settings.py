@@ -165,3 +165,5 @@ LOGOUT_REDIRECT_URL = None
 
 # Backend de e-mail que imprime no console (útil para testes)
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'  # default
