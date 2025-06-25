@@ -1,0 +1,38 @@
+# Dependências para testes do projeto Django
+
+# Pytest e plugins
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+pytest-xdist==3.4.0  # Para executar testes em paralelo
+pytest-timeout==2.2.0  # Para timeout em testes lentos
+pytest-mock==3.12.0  # Para mocking
+pytest-factoryboy==2.6.0  # Para integração com factory_boy
+
+# Factory Boy para criar dados de teste
+factory_boy==3.3.0
+
+# Ferramentas de teste para Django
+django-test-plus==2.2.2  # Ferramentas extras para teste
+model_bakery==1.17.0  # Alternativa ao factory_boy
+
+# Ferramentas de cobertura
+coverage==7.3.2
+
+# Ferramentas de mock e stub
+responses==0.24.1  # Para mock de requests HTTP
+freezegun==1.2.2  # Para mock de tempo/data
+faker==20.1.0  # Para gerar dados fake
+
+# Ferramentas de performance
+pytest-benchmark==4.0.0  # Para benchmark de performance
+
+# Ferramentas de segurança
+bandit==1.7.5  # Para análise de segurança
+
+# Ferramentas de debugging
+django-debug-toolbar==4.2.0
+django-extensions==3.2.3
+
+# Selenium para testes de interface (se necessário)
+selenium==4.15.2
