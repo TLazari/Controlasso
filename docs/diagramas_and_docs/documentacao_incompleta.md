@@ -132,7 +132,7 @@ Risco 12: Falta de validação dos dados de entrada
 Causa: Falhas nos formulários e na sanitização. 
 Consequência: Erros de lógica, vulnerabilidades e falhas críticas. 
 
-## Classificação e Análise Qualitativa 
+### Classificação e Análise Qualitativa 
 
 | **Risco**                                               | **Probabilidade** | **Impacto** | **Prioridade** |
 |---------------------------------------------------------|-------------------|-------------|----------------|
@@ -142,7 +142,7 @@ Consequência: Erros de lógica, vulnerabilidades e falhas críticas.
 | Problemas com deploy (Railway, Render etc.)             | Média             | Alta        | Alta           |
 | Falta de documentação técnica                           | Alta              | Média       | Alta           |
 
-## Plano de Resposta aos Riscos
+### Plano de Resposta aos Riscos
 
 | **Risco**                                | **Estratégia** | **Ação prática**                                                                                                  |
 |------------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------|
