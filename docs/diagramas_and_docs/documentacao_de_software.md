@@ -158,6 +158,22 @@ Consequência: Erros de lógica, vulnerabilidades e falhas críticas.
 | Falta de documentação técnica            | Evitar         | Estabelecer rotina de documentação ao final de cada sprint.                                                      |
 | Pouco tempo para testes                  | Reduzir        | Planejar tempo exclusivo para testes em cada sprint com responsável designado.                                   |
 
+### Critérios de Aceitabilidade dos Riscos 
+
+| Risco                                               | Probabilidade  | Gravidade         |
+|-----------------------------------------------------|----------------|--------------------|
+| Falta de domínio em Django                         | Frequente (5)  | Crítica (3)        |
+| Integração fraca de front-end e back-end           | Frequente (5)  | Crítica (3)        |
+| Pouco tempo para testes                            | Frequente (5)  | Crítica (3)        |
+| Conflitos no versionamento de código               | Remota (3)     | Crítica (3)        |
+| Interface pouco amigável                           | Remota (3)     | Crítica (3)        |
+| Falhas de segurança na autenticação                | Remota (3)     | Catastrófica (5)   |
+| Falta de documentação técnica                      | Frequente (5)  | Crítica (3)        |
+| Sobreposição de tarefas entre membros              | Remota (3)     | Crítica (3)        |
+| Complexidade excessiva em funcionalidades simples  | Improvável (1) | Crítica (3)        |
+| Problemas com deploy (Railway, Render etc.)        | Remota (3)     | Catastrófica (5)   |
+| APIs externas (ex: dados de ações) fora do ar      | Frequente (5)  | Catastrófica (5)   |
+| Falta de validação dos dados de entrada            | Remota (3)     | Catastrófica (5)   |
 
 ### 5.3 Funcionalidade do Projeto
 
