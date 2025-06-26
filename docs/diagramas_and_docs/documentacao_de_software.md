@@ -138,7 +138,7 @@ Risco 12: Falta de validação dos dados de entrada
 Causa: Falhas nos formulários e na sanitização. 
 Consequência: Erros de lógica, vulnerabilidades e falhas críticas. 
 
-### Classificação e Análise Qualitativa 
+### 5.2.1 Classificação e Análise Qualitativa 
 
 | **Risco**                                               | **Probabilidade** | **Impacto** | **Prioridade** |
 |---------------------------------------------------------|-------------------|-------------|----------------|
@@ -148,7 +148,7 @@ Consequência: Erros de lógica, vulnerabilidades e falhas críticas.
 | Problemas com deploy (Railway, Render etc.)             | Média             | Alta        | Alta           |
 | Falta de documentação técnica                           | Alta              | Média       | Alta           |
 
-### Plano de Resposta aos Riscos
+### 5.2.2 Plano de Resposta aos Riscos
 
 | **Risco**                                | **Estratégia** | **Ação prática**                                                                                                  |
 |------------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------|
@@ -158,7 +158,7 @@ Consequência: Erros de lógica, vulnerabilidades e falhas críticas.
 | Falta de documentação técnica            | Evitar         | Estabelecer rotina de documentação ao final de cada sprint.                                                      |
 | Pouco tempo para testes                  | Reduzir        | Planejar tempo exclusivo para testes em cada sprint com responsável designado.                                   |
 
-### Critérios de Aceitabilidade dos Riscos 
+### 5.2.3 Critérios de Aceitabilidade dos Riscos 
 
 | Risco                                               | Probabilidade  | Gravidade         |
 |-----------------------------------------------------|----------------|--------------------|
