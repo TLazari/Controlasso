@@ -41,7 +41,7 @@ O projeto utiliza a metodologia ágil Scrum para gestão de sprints. A escolha v
 
 ### 4.2 Lista de Requisitos
 
-#### Requisitos Funcionais (RFs)
+#### 4.2.1 Requisitos Funcionais (RFs)
 
 1. Cadastro de usuário gerando conta e saldo aleatório.
 2. Transferência de valores entre usuários.
@@ -50,7 +50,7 @@ O projeto utiliza a metodologia ágil Scrum para gestão de sprints. A escolha v
 5. Dashboards de saldo, movimentações e ações.
 6. Autenticação e controle de permissões (ADM e usuário).
 
-#### Requisitos Não-funcionais (RNFs)
+#### 4.2.2 Requisitos Não-funcionais (RNFs)
 
 1. Utilizar Django como framework principal.
 2. Proteger todas as rotas que exigem autenticação.
@@ -62,7 +62,7 @@ O projeto utiliza a metodologia ágil Scrum para gestão de sprints. A escolha v
 8. Git para versionameto 
 9. Vs code como ide
     
-#### Regras de Negócio (RN)
+#### 4.2.3 Regras de Negócio (RN)
 
 1. Cada usuário possui uma conta única.
 2. Transferências somente são efetivadas com saldo suficiente.
